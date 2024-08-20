@@ -11,13 +11,13 @@ export const fetchData = (key) => {
 	return JSON.parse(localStorage.getItem(key));
 };
 
-//Get all items from local storage
+// Get all items from local storage
 export const getAllMatchingItems = ({ category, key, value }) => {
 	const data = fetchData(category) ?? [];
 	return data.filter((item) => item[key] === value);
 };
 
-//Delete item from local storage
+// Delete item from local storage
 export const deleteItem = ({ key, id }) => {
 	const existingData = fetchData(key);
 	if (id) {
@@ -27,13 +27,14 @@ export const deleteItem = ({ key, id }) => {
 	return localStorage.removeItem(key);
 };
 
-//create budget
-export const createBudget = ({ name, amount }) => {
+// Create budget with currency support
+export const createBudget = ({ name, amount, currency = "USD" }) => {
 	const newItem = {
 		id: crypto.randomUUID(),
 		name: name,
 		createdAt: Date.now(),
 		amount: +amount,
+		currency: currency, // Store the selected currency
 		color: generateRandomColor(),
 	};
 	const existingBudgets = fetchData("budgets") ?? [];
@@ -43,14 +44,15 @@ export const createBudget = ({ name, amount }) => {
 	);
 };
 
-//create expense
-export const createExpense = ({ name, amount, budgetId }) => {
+// Create expense with currency support
+export const createExpense = ({ name, amount, budgetId, currency = "USD" }) => {
 	const newItem = {
 		id: crypto.randomUUID(),
 		name: name,
 		createdAt: Date.now(),
 		amount: +amount,
 		budgetId: budgetId,
+		currency: currency, // Store the currency used for the expense
 	};
 	const existingExpenses = fetchData("expenses") ?? [];
 	return localStorage.setItem(
@@ -59,24 +61,24 @@ export const createExpense = ({ name, amount, budgetId }) => {
 	);
 };
 
-// total spent by budget
+// Total spent by budget in original currency
 export const calculateSpentByBudget = (budgetId) => {
 	const expenses = fetchData("expenses") ?? [];
 	const budgetSpent = expenses.reduce((acc, expense) => {
-		//check if expense.id === budgetId passed in
+		// Check if expense.id === budgetId passed in
 		if (expense.budgetId !== budgetId) return acc;
 
-		//add the current amount to total
+		// Add the current amount to total
 		return (acc += expense.amount);
 	}, 0);
 	return budgetSpent;
 };
 
-//formatting
+// Format date to locale string
 export const formatDateToLocaleString = (epoch) =>
 	new Date(epoch).toLocaleString();
 
-//formatting percentages
+// Formatting percentages
 export const formatPercentage = (amt) => {
 	return amt.toLocaleString(undefined, {
 		style: "percent",
@@ -84,10 +86,17 @@ export const formatPercentage = (amt) => {
 	});
 };
 
-//format currency
-export const formatCurrency = (amt) => {
+// Format currency with support for different currencies
+export const formatCurrency = (amt, currency = "USD") => {
 	return amt.toLocaleString(undefined, {
 		style: "currency",
-		currency: "USD",
+		currency: currency,
 	});
+};
+
+// Convert currency from one to another using exchange rates
+export const convertCurrency = (amount, fromCurrency, toCurrency, rates) => {
+	if (fromCurrency === toCurrency) return amount;
+	const conversionRate = rates[toCurrency] / rates[fromCurrency];
+	return amount * conversionRate;
 };

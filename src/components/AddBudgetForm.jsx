@@ -1,30 +1,23 @@
-//react router dom imports
-import { Form, useFetcher } from "react-router-dom";
-
-//react imports
-import { useEffect, useRef } from "react";
-
-//library imports
+import React, { useState } from "react";
+import { useFetcher } from "react-router-dom";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
+import CurrencyConverter from "./CurrencyConverter";
 
 const AddBudgetForm = () => {
 	const fetcher = useFetcher();
 	const isSubmitting = fetcher.state === "submitting";
+	const [convertedAmount, setConvertedAmount] = useState("");
+	const [currency, setCurrency] = useState("USD");
 
-	const formRef = useRef();
-	const focusRef = useRef();
-
-	useEffect(() => {
-		if (!isSubmitting) {
-			formRef.current.reset();
-			focusRef.current.focus();
-		}
-	}, [isSubmitting]);
+	const handleConvert = (amount, currency) => {
+		setConvertedAmount(amount);
+		setCurrency(currency);
+	};
 
 	return (
 		<div className="form-wrapper">
 			<h2 className="h3">Create Budget</h2>
-			<fetcher.Form method="post" className="grid-sm" ref={formRef}>
+			<fetcher.Form method="post" className="grid-sm">
 				<div className="grid-xs">
 					<label htmlFor="newBudget">Budget Name</label>
 					<input
@@ -33,9 +26,10 @@ const AddBudgetForm = () => {
 						id="newBudget"
 						placeholder="e.g., Groceries"
 						required
-						ref={focusRef}
 					/>
 				</div>
+				{/* Currency Converter moved here */}
+				<CurrencyConverter onConvert={handleConvert} />
 				<div className="grid-xs">
 					<label htmlFor="newBudgetAmount">Amount</label>
 					<input
@@ -43,10 +37,12 @@ const AddBudgetForm = () => {
 						step="0.01"
 						name="newBudgetAmount"
 						id="newBudgetAmount"
+						value={convertedAmount}
 						placeholder="e.g., $350"
 						required
 						inputMode="decimal"
 					/>
+					<input type="hidden" name="currency" value={currency} />
 				</div>
 				<input type="hidden" name="_action" value="createBudget" />
 				<button type="submit" className="btn btn--dark" disabled={isSubmitting}>
