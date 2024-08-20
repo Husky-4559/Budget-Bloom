@@ -21,39 +21,40 @@ I built Budget Bloom to empower users from all over the world to take control of
 To get started with the application, follow these steps:
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/Husky-4559/Budget-Bloom.git
    ```
 
-Navigate to the project directory: cd Budget-Bloom
+2. **Navigate to the project directory**: cd Budget-Bloom
 
-Install dependencies: npm install
+3. **Install dependencies**: npm install
 
-Run the application: npm run dev
+4. **Run the application**: npm run dev
 
-Usage
+# Usage
 
-Dashboard
+## Dashboard
 
-When you first access the application, you’ll be greeted with a welcome message.
+### When you first access the application, you’ll be greeted with a welcome message.
 
     •	New Users: Enter your name to create a new account.
     •	Returning Users: Your name will be displayed, and you can start managing your budgets and expenses.
 
-Adding a Budget
+### Adding a Budget
 
     •	Click on the “Add Budget” form.
     •	Enter the name of the budget and the total amount allocated for that budget.
     •	Click “Create Budget” to save.
 
-Adding an Expense
+### Adding an Expense
 
     •	Click on the “Add Expense” form.
     •	Select the budget under which the expense falls.
     •	Enter the name and amount of the expense.
     •	Click “Create Expense” to save.
 
-Viewing and Managing Budgets and Expenses
+### Viewing and Managing Budgets and Expenses
 
     •	Existing Budgets: All your budgets are listed. You can view details of each budget.
     •	Recent Expenses: A table of recent expenses is shown. Click “View all expenses” to see a full list.
