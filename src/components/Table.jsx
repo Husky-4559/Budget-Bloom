@@ -1,4 +1,4 @@
-//components import
+// component import
 import ExpenseItem from "./ExpenseItem";
 
 const Table = ({ expenses, showBudget = true }) => {
@@ -25,5 +25,4 @@ const Table = ({ expenses, showBudget = true }) => {
 		</div>
 	);
 };
-
 export default Table;

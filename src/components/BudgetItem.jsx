@@ -9,31 +9,11 @@ import {
 	calculateSpentByBudget,
 	formatCurrency,
 	formatPercentage,
-	convertCurrency,
 } from "../helpers";
 
-const BudgetItem = ({
-	budget,
-	showDelete = false,
-	currencyRates,
-	selectedCurrency,
-}) => {
-	const { id, name, amount, color, currency } = budget;
+const BudgetItem = ({ budget, showDelete = false }) => {
+	const { id, name, amount, color } = budget;
 	const spent = calculateSpentByBudget(id);
-
-	// Convert budget amount and spent amount to selected currency
-	const convertedAmount = convertCurrency(
-		amount,
-		currency,
-		selectedCurrency,
-		currencyRates
-	);
-	const convertedSpent = convertCurrency(
-		spent,
-		currency,
-		selectedCurrency,
-		currencyRates
-	);
 
 	return (
 		<div
@@ -44,17 +24,14 @@ const BudgetItem = ({
 		>
 			<div className="progress-text">
 				<h3>{name}</h3>
-				<p>{formatCurrency(convertedAmount, selectedCurrency)} Budgeted</p>
+				<p>{formatCurrency(amount)} Budgeted</p>
 			</div>
 			<progress max={amount} value={spent}>
 				{formatPercentage(spent / amount)}
 			</progress>
 			<div className="progress-text">
-				<small>{formatCurrency(convertedSpent, selectedCurrency)} spent</small>
-				<small>
-					{formatCurrency(convertedAmount - convertedSpent, selectedCurrency)}{" "}
-					remaining
-				</small>
+				<small>{formatCurrency(spent)} spent</small>
+				<small>{formatCurrency(amount - spent)} remaining</small>
 			</div>
 			{showDelete ? (
 				<div className="flex-sm">
@@ -88,5 +65,4 @@ const BudgetItem = ({
 		</div>
 	);
 };
-
 export default BudgetItem;

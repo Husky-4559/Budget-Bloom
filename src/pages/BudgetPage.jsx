@@ -1,6 +1,5 @@
 // rrd imports
 import { useLoaderData } from "react-router-dom";
-import { useState, useEffect } from "react";
 
 // library
 import { toast } from "react-toastify";
@@ -12,7 +11,6 @@ import Table from "../components/Table";
 
 // helpers
 import { createExpense, deleteItem, getAllMatchingItems } from "../helpers";
-import { fetchCurrencyRates } from "../services/currencyService";
 
 // loader
 export async function budgetLoader({ params }) {
@@ -68,18 +66,6 @@ export async function budgetAction({ request }) {
 
 const BudgetPage = () => {
 	const { budget, expenses } = useLoaderData();
-	const [currencyRates, setCurrencyRates] = useState({});
-	const [selectedCurrency, setSelectedCurrency] = useState("USD");
-
-	// Fetch currency rates on mount
-	useEffect(() => {
-		const getRates = async () => {
-			const rates = await fetchCurrencyRates();
-			setCurrencyRates(rates);
-		};
-
-		getRates();
-	}, []);
 
 	return (
 		<div
@@ -92,12 +78,7 @@ const BudgetPage = () => {
 				<span className="accent">{budget.name}</span> Overview
 			</h1>
 			<div className="flex-lg">
-				<BudgetItem
-					budget={budget}
-					showDelete={true}
-					currencyRates={currencyRates}
-					selectedCurrency={selectedCurrency}
-				/>
+				<BudgetItem budget={budget} showDelete={true} />
 				<AddExpenseForm budgets={[budget]} />
 			</div>
 			{expenses && expenses.length > 0 && (
@@ -111,5 +92,4 @@ const BudgetPage = () => {
 		</div>
 	);
 };
-
 export default BudgetPage;

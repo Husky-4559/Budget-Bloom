@@ -1,24 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-//library
+// Library
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-//Routes
-import Dashboard, { dashboardAction, dashboardLoader } from "./pages/Dashboard";
-import Error from "./pages/Error";
-import ExpensesPage, {
-	expensesAction,
-	expensesLoader,
-} from "./pages/ExpensesPage";
-import BudgetPage, { budgetAction, budgetLoader } from "./pages/BudgetPage";
-
-//layouts
+// Layouts
 import Main, { mainLoader } from "./layouts/Main";
 
 // Actions
 import { logoutAction } from "./actions/logout";
 import { deleteBudget } from "./actions/deleteBudget";
+
+// Routes
+import Dashboard, { dashboardAction, dashboardLoader } from "./pages/Dashboard";
+import Error from "./pages/Error";
+import BudgetPage, { budgetAction, budgetLoader } from "./pages/BudgetPage";
+import ExpensesPage, {
+	expensesAction,
+	expensesLoader,
+} from "./pages/ExpensesPage";
 
 const router = createBrowserRouter([
 	{
@@ -70,4 +70,5 @@ function App() {
 		</div>
 	);
 }
+
 export default App;

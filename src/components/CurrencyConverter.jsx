@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { fetchCurrencyRates } from "../services/currencyService";
 
 const currencyData = {
@@ -164,19 +164,21 @@ const currencyData = {
 
 const CurrencyConverter = ({ onConvert }) => {
 	const [rates, setRates] = useState({});
-	const [amount, setAmount] = useState(0);
+	const [amount, setAmount] = useState("");
 	const [fromCurrency, setFromCurrency] = useState("USD");
 	const [toCurrency, setToCurrency] = useState("EUR");
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
+	// Fetch currency rates when the component mounts
 	useEffect(() => {
 		const getRates = async () => {
 			try {
 				const fetchedRates = await fetchCurrencyRates();
 				setRates(fetchedRates);
 			} catch (err) {
-				setError("Failed to fetch currency rates.");
+				setError("Failed to fetch currency rates. Please try again later.");
+				console.error(err);
 			} finally {
 				setLoading(false);
 			}
@@ -185,24 +187,41 @@ const CurrencyConverter = ({ onConvert }) => {
 		getRates();
 	}, []);
 
-	const convertCurrency = () => {
-		if (!rates[fromCurrency] || !rates[toCurrency]) return "N/A";
+	// Function to handle currency conversion
+	const convertCurrency = useCallback(() => {
+		if (
+			!rates[fromCurrency] ||
+			!rates[toCurrency] ||
+			isNaN(amount) ||
+			amount === ""
+		) {
+			return "N/A";
+		}
+
 		const convertedAmount = (
 			(amount / rates[fromCurrency]) *
 			rates[toCurrency]
 		).toFixed(2);
+
+		// Pass the converted amount and currency back to parent component if needed
 		if (onConvert) {
-			onConvert(convertedAmount, toCurrency); // Pass converted amount and currency back to parent
+			onConvert(convertedAmount, toCurrency);
 		}
+
 		return convertedAmount;
+	}, [amount, fromCurrency, toCurrency, rates, onConvert]);
+
+	// Handle input validation
+	const handleAmountChange = (e) => {
+		const value = e.target.value;
+		if (!isNaN(value) || value === "") {
+			setAmount(value);
+		}
 	};
 
-	useEffect(() => {
-		convertCurrency();
-	}, [amount, fromCurrency, toCurrency]);
-
+	// Conditional rendering based on loading or error states
 	if (loading) return <p>Loading...</p>;
-	if (error) return <p>{error}</p>;
+	if (error) return <p className="error">{error}</p>;
 
 	return (
 		<div className="currency-converter form-wrapper">
@@ -211,15 +230,17 @@ const CurrencyConverter = ({ onConvert }) => {
 				<input
 					type="number"
 					value={amount}
-					onChange={(e) => setAmount(e.target.value)}
+					onChange={handleAmountChange}
 					placeholder="Amount"
+					min="0"
+					step="0.01"
 				/>
 				<div className="select-group">
 					<select
 						value={fromCurrency}
 						onChange={(e) => setFromCurrency(e.target.value)}
 					>
-						{Object.keys(rates).map((key) => (
+						{Object.keys(currencyData).map((key) => (
 							<option key={key} value={key}>
 								{currencyData[key]} ({key})
 							</option>
@@ -230,7 +251,7 @@ const CurrencyConverter = ({ onConvert }) => {
 						value={toCurrency}
 						onChange={(e) => setToCurrency(e.target.value)}
 					>
-						{Object.keys(rates).map((key) => (
+						{Object.keys(currencyData).map((key) => (
 							<option key={key} value={key}>
 								{currencyData[key]} ({key})
 							</option>

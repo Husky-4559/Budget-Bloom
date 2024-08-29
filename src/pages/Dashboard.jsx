@@ -1,6 +1,3 @@
-// React imports
-import React, { useState, useEffect } from "react";
-
 // rrd imports
 import { Link, useLoaderData } from "react-router-dom";
 
@@ -14,7 +11,7 @@ import AddExpenseForm from "../components/AddExpenseForm";
 import BudgetItem from "../components/BudgetItem";
 import Table from "../components/Table";
 
-// helper functions
+//  helper functions
 import {
 	createBudget,
 	createExpense,
@@ -22,9 +19,6 @@ import {
 	fetchData,
 	waait,
 } from "../helpers";
-
-// services
-import { fetchCurrencyRates } from "../services/currencyService";
 
 // loader
 export function dashboardLoader() {
@@ -91,24 +85,13 @@ export async function dashboardAction({ request }) {
 
 const Dashboard = () => {
 	const { userName, budgets, expenses } = useLoaderData();
-	const [currencyRates, setCurrencyRates] = useState({});
-	const [selectedCurrency, setSelectedCurrency] = useState("USD");
-
-	useEffect(() => {
-		const getRates = async () => {
-			const rates = await fetchCurrencyRates();
-			setCurrencyRates(rates);
-		};
-
-		getRates();
-	}, []);
 
 	return (
 		<>
 			{userName ? (
 				<div className="dashboard">
 					<h1>
-						Welcome back, <span className="accent">{userName}!</span>
+						Welcome back, <span className="accent">{userName}</span>
 					</h1>
 					<div className="grid-sm">
 						{budgets && budgets.length > 0 ? (
@@ -120,12 +103,7 @@ const Dashboard = () => {
 								<h2>Existing Budgets</h2>
 								<div className="budgets">
 									{budgets.map((budget) => (
-										<BudgetItem
-											key={budget.id}
-											budget={budget}
-											currencyRates={currencyRates}
-											selectedCurrency={selectedCurrency}
-										/>
+										<BudgetItem key={budget.id} budget={budget} />
 									))}
 								</div>
 								{expenses && expenses.length > 0 && (
@@ -159,5 +137,4 @@ const Dashboard = () => {
 		</>
 	);
 };
-
 export default Dashboard;
